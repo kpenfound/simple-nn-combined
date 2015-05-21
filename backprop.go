@@ -2,7 +2,7 @@ package main
 
 import "math"
 
-const startingCoefficient float64 = 3.0
+const startingCoefficient float64 = 2.0
 const coeffDecay float64 = 0.98
 
 type BackPropogator struct {
@@ -44,7 +44,7 @@ func (bp *BackPropogator) Propogate(output float64) {
         } else {
           input = bp.nn.neuronLayers[i - 1].neurons[k].output
         }
-        bp.nn.neuronLayers[i].neurons[j].weights[k] += coeff * errors[i][j] * math.Atan(input) * bp.nn.neuronLayers[i].neurons[j].output
+        bp.nn.neuronLayers[i].neurons[j].weights[k] += coeff * errors[i][j] * (input * (1 - input)) * bp.nn.neuronLayers[i].neurons[j].output
       }
     }
   }

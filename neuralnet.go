@@ -1,20 +1,14 @@
 package main
 
 import "math"
-import "math/rand"
-import "time"
 
 const neuralLayers = 2
 const outputNodes int = 1
 const middleNodes int = 3
 const inputNodes int = 2
 
-func SetupNeuralNetwork() NeuronNetwork {
+func SetupNeuralNetwork(initialWeight float64, initialBias float64) NeuronNetwork {
   layerSizes := []int{inputNodes,middleNodes,outputNodes}
-  // Random seeder
-  t := time.Now().Unix()
-  seed := rand.NewSource((t % 100)+1)
-  rando := rand.New(seed)
 
   layers := make([]NeuronLayer, neuralLayers)
   for i := 1; i < len(layerSizes); i++ { // Start at 1, our inputs are not neural nodes
@@ -22,23 +16,15 @@ func SetupNeuralNetwork() NeuronNetwork {
     for k := 0; k < layerSizes[i]; k++ {
       weights := make([]float64, layerSizes[i-1])
       for j := 0; j < layerSizes[i-1]; j++ {
-        weights[j] = RandomWeight(rando)
+        weights[j] = initialWeight
       }
-      neurons[k] = Neuron{weights, RandomThreshold(rando), 0}
+      neurons[k] = Neuron{weights, initialBias, 0}
     }
     layers[i-1] = NeuronLayer{neurons}
   }
   network := NeuronNetwork{[]float64{0,0}, []float64{0}, layers}
 
   return network
-}
-
-func RandomWeight(randomGenerator *rand.Rand) float64 { // Between -1 and 1
-  return (randomGenerator.Float64() * 2) - 1
-}
-
-func RandomThreshold(randomGenerator *rand.Rand) float64 { // Between -2 and 2
-  return (randomGenerator.Float64() * 4) - 2
 }
 
 // Neuron
@@ -56,7 +42,7 @@ func (n *Neuron) WeightedSigma(inputs []float64) float64 { // Sums inputs * weig
 }
 
 func (n *Neuron) NonLinearFunc(value float64) float64 { // Applies non-linear function with threshold
-  return math.Tan(value) + n.threshold
+  return (1 / (1 + math.Exp(-1.0 * value))) + n.threshold // Adjusted to a non repeating function from the first example
 }
 
 func (n *Neuron) Update(inputs []float64) { // Computes output of node for given inputs
