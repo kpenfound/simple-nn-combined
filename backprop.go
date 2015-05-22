@@ -2,16 +2,15 @@ package main
 
 import "math"
 
-type BackPropogator struct {
+type BackPropagator struct {
   nn NeuronNetwork
   expectedOutput float64
   iteration int
 }
 
-func (bp *BackPropogator) Propogate(output float64) {
-  err := 0.5 * math.Pow(bp.expectedOutput - output, 2.0)
-
-  errors := [4][4]float64{}
+func (bp *BackPropagator) Propagate(output float64) {
+  err := 0.5 * math.Pow(bp.expectedOutput - output, 2.0) // E = 1/2 * (target - calculated)^2
+  errors := [4][4]float64{} // Storage for net error values
 
   // Error Calculation: d3 = w34d4 + w35d5
   for i := len(bp.nn.neuronLayers) - 1; i >= 0; i-- {
@@ -30,7 +29,7 @@ func (bp *BackPropogator) Propogate(output float64) {
     }
   }
 
-  // Weight Adjustment: w'12 = w12 + ( d * df1(e)/de * y2)
+  // Weight Adjustment: w'12 = w12 + (d * df1(e)/de * y2)
   for i := 0; i < len(bp.nn.neuronLayers); i++ {
     for j := 0; j < len(bp.nn.neuronLayers[i].neurons); j ++ {
       for k := 0; k < len(bp.nn.neuronLayers[i].neurons[j].weights); k++ {
@@ -44,6 +43,5 @@ func (bp *BackPropogator) Propogate(output float64) {
       }
     }
   }
-
   bp.iteration++
 }

@@ -6,6 +6,16 @@ const neuralLayers = 2
 const outputNodes int = 1
 const middleNodes int = 4
 const inputNodes int = 2
+/* 2 - 4 - 1 Network
+
+      0
+  0
+      0
+          0
+      0
+  0
+      0
+*/
 
 func SetupNeuralNetwork(initialWeight float64, initialBias float64) NeuronNetwork {
   layerSizes := []int{inputNodes,middleNodes,outputNodes}
