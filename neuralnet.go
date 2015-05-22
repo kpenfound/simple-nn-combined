@@ -4,7 +4,7 @@ import "math"
 
 const neuralLayers = 2
 const outputNodes int = 1
-const middleNodes int = 3
+const middleNodes int = 4
 const inputNodes int = 2
 
 func SetupNeuralNetwork(initialWeight float64, initialBias float64) NeuronNetwork {
