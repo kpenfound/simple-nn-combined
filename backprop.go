@@ -1,7 +1,5 @@
 package main
 
-import "math"
-
 type BackPropagator struct {
   nn NeuronNetwork
   expectedOutput float64
@@ -9,7 +7,7 @@ type BackPropagator struct {
 }
 
 func (bp *BackPropagator) Propagate(output float64) {
-  err := 0.5 * math.Pow(bp.expectedOutput - output, 2.0) // E = 1/2 * (target - calculated)^2
+  err := (bp.expectedOutput - output) * (1 - output) * output;
   errors := [4][4]float64{} // Storage for net error values
 
   // Error Calculation: d3 = w34d4 + w35d5
@@ -39,7 +37,7 @@ func (bp *BackPropagator) Propagate(output float64) {
         } else {
           input = bp.nn.neuronLayers[i - 1].neurons[k].output
         }
-        bp.nn.neuronLayers[i].neurons[j].weights[k] +=  errors[i][j] * (input * (1.0 - input)) * bp.nn.neuronLayers[i].neurons[j].output
+        bp.nn.neuronLayers[i].neurons[j].weights[k] +=  errors[i][j] * (input * (1.0 - input))
       }
     }
   }
